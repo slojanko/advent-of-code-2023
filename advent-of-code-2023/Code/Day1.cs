@@ -49,7 +49,7 @@
 
     private int FindDigitsHard(string line)
     {
-        List<string> spelled = new() { "one", "two", "three", "four", "five", "six", "seven", "eight", "nine" };
+        List<string> spelled = new() { "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "1", "2", "3", "4", "5", "6", "7", "8", "9" };
         int? firstSpelledDigitIndex = null;
         int? lastSpelledDigitIndex = null;
         int? firstDigit = null;
@@ -63,7 +63,7 @@
                 if (!firstSpelledDigitIndex.HasValue || firstSpelledDigitIndex.Value > index)
                 {
                     firstSpelledDigitIndex = index;
-                    firstDigit = i + 1;
+                    firstDigit = (i % 9) + 1;
                 }
             }
 
@@ -73,27 +73,7 @@
                 if (!lastSpelledDigitIndex.HasValue || lastSpelledDigitIndex.Value < index)
                 {
                     lastSpelledDigitIndex = index;
-                    lastDigit = i + 1;
-                }
-            }
-        }
-
-        for(int i = 0; i < line.Length; i++)
-        {
-            if (char.IsDigit(line[i]))
-            {
-                int digit = line[i] - '0';
-
-                if (!firstSpelledDigitIndex.HasValue || firstSpelledDigitIndex.Value > i)
-                {
-                    firstSpelledDigitIndex = i;
-                    firstDigit = digit;
-                }
-
-                if (!lastSpelledDigitIndex.HasValue || lastSpelledDigitIndex.Value < i)
-                {
-                    lastSpelledDigitIndex = i;
-                    lastDigit = digit;
+                    lastDigit = (i % 9) + 1;
                 }
             }
         }
