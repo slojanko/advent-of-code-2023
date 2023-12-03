@@ -1,2 +1,2 @@
 # advent-of-code-2023
-Advent of code 2023 solutions
+C# solutions for Advent of code 2023
