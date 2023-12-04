@@ -11,7 +11,11 @@
         //day2.SolveHard();
 
         Solver day3 = new Day3();
-        day3.SolveEasy();
-        day3.SolveHard();
+        //day3.SolveEasy();
+        //day3.SolveHard();
+
+        Solver day4 = new Day4();
+        day4.SolveEasy();
+        day4.SolveHard();
     }
 }
