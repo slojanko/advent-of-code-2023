@@ -62,8 +62,9 @@
 
         ReadInput(input, seeds, maps);
 
+        // Fast version
         List<long> still_needed = [.. seeds];
-        List<long> intermediate = new List<long>();
+        List<long> mapped_ranges = new List<long>();
 
         // Go through each map
         for (int j = 0; j < maps.Count; j++)
@@ -84,13 +85,15 @@
 
                     still_needed.RemoveRange(0, 2);
 
+                    // Find split for range and input (seeds)
                     long left_split = Math.Max(start, range.source);
                     long right_split = Math.Min(end, range.source + range.length - 1);
 
+                    // Check if either split actually split the input
                     if (left_split < right_split)
                     {
-                        intermediate.Add(range.destination + left_split - range.source);
-                        intermediate.Add(right_split - left_split + 1);
+                        mapped_ranges.Add(range.destination + left_split - range.source);
+                        mapped_ranges.Add(right_split - left_split + 1);
 
                         if (left_split > start)
                         {
@@ -112,8 +115,8 @@
 
             }
 
-            still_needed.AddRange(intermediate);
-            intermediate.Clear();
+            still_needed.AddRange(mapped_ranges);
+            mapped_ranges.Clear();
         }
 
         for(int i = 0; i < still_needed.Count; i+=2)
@@ -121,8 +124,9 @@
             result = Math.Min(result, still_needed[i]);
         }
 
-        // Slow version
-        //while(true)
+        //// Slow version
+        //result = 0;
+        //while (true)
         //{
         //    long seed = MapReverse(result, maps);
         //    if (IsValidHard(seed, seeds))
