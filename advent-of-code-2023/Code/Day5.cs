@@ -39,9 +39,9 @@
     public override void SolveEasy()
     {
         string[] input = File.ReadAllLines(".\\Inputs\\day5.txt");
+        long result = long.MaxValue;
         List<long> seeds = new List<long>();
         List<Map> maps = new List<Map>();
-        long result = long.MaxValue;
 
         ReadInput(input, seeds, maps);
 
@@ -56,9 +56,9 @@
     public override void SolveHard()
     {
         string[] input = File.ReadAllLines(".\\Inputs\\day5.txt");
+        long result = long.MaxValue;
         List<long> seeds = new List<long>();
         List<Map> maps = new List<Map>();
-        long result = long.MaxValue;
 
         ReadInput(input, seeds, maps);
 
@@ -90,7 +90,7 @@
                     long right_split = Math.Min(end, range.source + range.length - 1);
 
                     // Check if either split actually split the input
-                    if (left_split < right_split)
+                    if (left_split <= right_split)
                     {
                         mapped_ranges.Add(range.destination + left_split - range.source);
                         mapped_ranges.Add(right_split - left_split + 1);

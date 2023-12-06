@@ -14,8 +14,8 @@ internal class Day4 : Solver
     public override void SolveEasy()
     {
         string[] input = File.ReadAllLines(".\\Inputs\\day4.txt");
-        List<Card> cards = new List<Card>();
         int result = 0;
+        List<Card> cards = new List<Card>();
 
         foreach(var line in input)
         {
@@ -47,8 +47,8 @@ internal class Day4 : Solver
     public override void SolveHard()
     {
         string[] input = File.ReadAllLines(".\\Inputs\\day4.txt");
-        List<Card> cards = new List<Card>();
         int result = 0;
+        List<Card> cards = new List<Card>();
 
         foreach (var line in input)
         {
