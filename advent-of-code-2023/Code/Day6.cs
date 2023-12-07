@@ -1,6 +1,4 @@
-﻿using System.Runtime.ExceptionServices;
-
-internal class Day6 : Solver
+﻿internal class Day6 : Solver
 {
     public override void SolveEasy()
     {
