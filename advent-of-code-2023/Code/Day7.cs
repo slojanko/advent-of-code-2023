@@ -1,6 +1,4 @@
-﻿using System.Runtime.ExceptionServices;
-
-internal class Day7 : Solver
+﻿internal class Day7 : Solver
 {
     public enum HandType : int
     {
