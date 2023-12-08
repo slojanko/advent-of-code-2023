@@ -92,7 +92,7 @@ internal class Day7 : Solver
                 }
             }
 
-            return -1;
+            return 0;
         }
     }
 
