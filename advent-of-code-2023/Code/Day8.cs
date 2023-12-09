@@ -2,16 +2,66 @@
 {
     public class Node
     {
+        public string name;
         public bool is_start, is_end;
         public int source, left, right;
 
-        public Node(bool is_start, bool is_end, int source, int left, int right)
+        public Node(string name, bool is_start, bool is_end, int source, int left, int right)
         {
+            this.name = name;
             this.is_start = is_start;
             this.is_end = is_end;
             this.source = source;
             this.left = left;
             this.right = right;
+        }
+    }
+
+    public class Ghost
+    {
+        public Dictionary<Node, List<int>> end_visits_local_steps = new Dictionary<Node, List<int>>();
+        public List<int> end_visits_global_steps = new List<int>();
+
+        public Ghost(int start, string path, Dictionary<int, Node> nodes)
+        {
+            int step_counter = 0;
+            int path_index = 0;
+            int node_id = start;
+
+            while (true)
+            {
+                if (nodes[node_id].is_end)
+                {
+                    end_visits_local_steps.TryAdd(nodes[node_id], new List<int>());
+                    List<int> visits = end_visits_local_steps[nodes[node_id]];
+
+                    bool should_stop = false;
+                    // If we already visited node before, but now the step index is multiple of some previous visit, break immediately 
+                    foreach (var end_visits_global_step in end_visits_global_steps)
+                    {
+                        if (step_counter % end_visits_global_step == 0)
+                        {
+                            should_stop = true;
+                        }
+                    }
+
+                    if (should_stop)
+                    {
+                        break;
+                    }
+
+                    visits.Add(path_index);
+                    end_visits_global_steps.Add(step_counter);
+                }
+
+                step_counter++;
+
+                node_id = path[path_index] == 'R' ? nodes[node_id].right : nodes[node_id].left;
+
+                path_index = path_index == path.Length - 1 ? 0 : path_index + 1;
+            }
+
+            Console.WriteLine(string.Join(' ', end_visits_global_steps));
         }
     }
 
@@ -37,48 +87,28 @@
 
         while (true)
         {
-
             if (nodes[node_id].is_end)
             {
                 break;
             }
 
-            if (path[path_index] == 'R')
-            {
-                node_id = nodes[node_id].right;
-            } else
-            {
-                node_id = nodes[node_id].left;
-            }
-
             result++;
 
-            if (path_index == path.Length - 1)
-            {
-                path_index = 0;
-            } else
-            {
-                path_index++;
-            }
+            node_id = path[path_index] == 'R' ? nodes[node_id].right : nodes[node_id].left;
+
+            path_index = path_index == path.Length - 1 ? 0 : path_index + 1;
         }
 
         PrintEasy(result);
     }
 
-    // Theres only one **Z node for each ghost, idk if this is problem with input or not
-    // If there were multiple **Z nodes, we'd just get LCM for all combinations.
-    // If we had 3 ghosts and two of them had two **Z while third had just one, 
-    // we'd have to do 2*2*1 (4) different LCMs and get minimum from them.
-    // Also the logic for breaking out of loop would change, you'd only break
-    // if you came back to a previously visited **Z while path_index matched previous visit.
     public override void SolveHard()
     {
         string[] input = File.ReadAllLines(".\\Inputs\\day8.txt");
         long result = 1;
         Dictionary<int, Node> nodes = new Dictionary<int, Node>();
         string path = "";
-        int path_index = 0;
-        int node_id = 0;
+        List<Ghost> ghosts = new List<Ghost>();
 
         ReadInput(input, nodes, ref path, true);
 
@@ -86,44 +116,11 @@
         {
             if (value.is_start)
             {
-                long local_result = 0;
-                path_index = 0;
-                node_id = value.source;
-
-                Console.WriteLine("New ghost");
-
-                while (true)
-                {
-                    if (nodes[node_id].is_end)
-                    {
-                        Console.WriteLine(node_id);
-                        break;
-                    }
-
-                    if (path[path_index] == 'R')
-                    {
-                        node_id = nodes[node_id].right;
-                    }
-                    else
-                    {
-                        node_id = nodes[node_id].left;
-                    }
-
-                    local_result++;
-
-                    if (path_index == path.Length - 1)
-                    {
-                        path_index = 0;
-                    }
-                    else
-                    {
-                        path_index++;
-                    }
-                }
-
-                result = GetLCM(result, local_result);
+                ghosts.Add(new Ghost(value.source, path, nodes));
             }
         }
+
+        result = GetGhostsLCM(ghosts, 1, 0);
 
         PrintHard(result);
     }
@@ -147,22 +144,30 @@
             int left_id = node_to_id.GetValueOrDefault(left);
             int right_id = node_to_id.GetValueOrDefault(right);
 
-            nodes.Add(node_id, new Node(is_hard ? node.EndsWith('A') : node == "AAA", is_hard ? node.EndsWith("Z") : node == "ZZZ", node_id, left_id, right_id));
+            nodes.Add(node_id, new Node(node, is_hard ? node.EndsWith('A') : node == "AAA", is_hard ? node.EndsWith("Z") : node == "ZZZ", node_id, left_id, right_id));
         }
+    }
+
+    public long GetGhostsLCM(List<Ghost> ghosts, long current_lcm, int index)
+    {
+        if (index == ghosts.Count)
+        {
+            return current_lcm;
+        }
+
+        long new_lcm = long.MaxValue;
+
+        foreach (int steps in ghosts[index].end_visits_global_steps)
+        {
+            long local_lcm = GetGhostsLCM(ghosts, GetLCM(current_lcm, steps), index + 1);
+
+            new_lcm = Math.Min(new_lcm, local_lcm);
+        }
+
+        return new_lcm;
     }
 
     // Copied from https://stackoverflow.com/questions/147515/least-common-multiple-for-3-or-more-numbers
-    public long GetLCM(List<long> nums)
-    {
-        long result = nums[0];
-        for (int i = 1; i < nums.Count; i++)
-        {
-            result = GetLCM(result, nums[i]);
-        }
-
-        return result;
-    }
-
     public long GetLCM(long a, long b)
     {
         return a * b / GetGCD(a, b);

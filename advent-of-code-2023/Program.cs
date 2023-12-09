@@ -31,7 +31,7 @@
         //day7.SolveHard();
 
         Solver day8 = new Day8();
-        day8.SolveEasy();
+        // day8.SolveEasy();
         day8.SolveHard();
     }
 }
