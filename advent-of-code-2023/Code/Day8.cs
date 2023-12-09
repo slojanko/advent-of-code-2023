@@ -36,7 +36,10 @@
                     List<int> visits = end_visits_local_steps[nodes[node_id]];
 
                     bool should_stop = false;
-                    // If we already visited node before, but now the step index is multiple of some previous visit, break immediately 
+                    // This is still not correct. A loop inside a single ghost would be
+                    // knowing all future Z visits from some point onward will visit each node
+                    // with a step count thats multiple of some previous visit to this node.
+                    // How to detect this, idk.
                     foreach (var end_visits_global_step in end_visits_global_steps)
                     {
                         if (step_counter % end_visits_global_step == 0)
