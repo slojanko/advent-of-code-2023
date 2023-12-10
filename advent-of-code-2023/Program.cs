@@ -34,8 +34,12 @@
         //day8.SolveEasy();
         //day8.SolveHard();
 
-        Solver day9 = new Day9();
-        day9.SolveEasy();
-        day9.SolveHard();
+        //Solver day9 = new Day9();
+        //day9.SolveEasy();
+        //day9.SolveHard();
+
+        Solver day10 = new Day10();
+        day10.SolveEasy();
+        day10.SolveHard();
     }
 }
