@@ -219,19 +219,6 @@ internal class Day10 : Solver
         return (0, 0);
     }
 
-    public Direction Flip(Direction direction)
-    {
-        switch (direction)
-        {
-            case Direction.Right: return Direction.Left;
-            case Direction.Up: return Direction.Down;
-            case Direction.Left: return Direction.Right;
-            case Direction.Down: return Direction.Up;
-        }
-
-        return Direction.Invalid;
-    }
-
     // Doesnt work if S is on edge or corner, but not important for inputs
     public Pipe GetMissingPipe(Pipe[,] grid, (int, int) pos)
     {
