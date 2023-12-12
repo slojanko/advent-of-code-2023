@@ -1,6 +1,4 @@
-﻿using System.Transactions;
-
-internal class Day10 : Solver
+﻿internal class Day10 : Solver
 {
     public enum Direction : int
     {

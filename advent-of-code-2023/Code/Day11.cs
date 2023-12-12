@@ -1,7 +1,4 @@
-﻿using System.Security.Cryptography.X509Certificates;
-using System.Transactions;
-
-internal class Day11 : Solver
+﻿internal class Day11 : Solver
 {
     public class Galaxy
     {
