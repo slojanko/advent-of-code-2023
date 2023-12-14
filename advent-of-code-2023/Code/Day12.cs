@@ -51,8 +51,6 @@ internal class Day12 : Solver
         {
             long temp = SolveRecursive(row, 0, 0, 0);
 
-            Console.WriteLine(temp);
-
             result += temp;
 
             row.cache.Clear();
@@ -75,8 +73,6 @@ internal class Day12 : Solver
         {
             long temp = SolveRecursive(row, 0, 0, 0);
 
-            Console.WriteLine(temp);
-
             result += temp;
 
             row.cache.Clear();
@@ -89,35 +85,32 @@ internal class Day12 : Solver
 
     public long SolveRecursive(Row row, int startSpring, int startNum, Int128 current)
     {
+        if (row.cache.TryGetValue((startSpring, startNum), out long v))
+        {
+            return v;
+        }
+
+        // Check if everything up to now was correct 
         Int128 valid_damagedSpring = row.damagedSprings & (((Int128)1 << startSpring) - 1);
         if ((((valid_damagedSpring ^ current) & valid_damagedSpring) > 0) || ((row.allSprings & current) != current))
         {
-            //Console.WriteLine($"A {Convert.ToString((int)valid_damagedSpring, 2)} {Convert.ToString((int)row.allSprings, 2)} {Convert.ToString((int)current, 2)}");
             return 0;
         }
 
+        // If we ran out of numbers, we will always return
         if (startNum == row.numbers.Count)
         {
             if (((row.damagedSprings & current) == row.damagedSprings) && ((row.allSprings & current) == current))
             {
-                //Console.WriteLine($"B {Convert.ToString((int)current, 2)}");
                 return 1;
             }
 
-            //Console.WriteLine($"C {Convert.ToString((int)current, 2)}");
             return 0;
         }
 
         if (startSpring >= row.springsCount)
         {
-            //Console.WriteLine($"D {Convert.ToString((int)current, 2)}");
             return 0;
-        }
-
-        if (row.cache.TryGetValue((startSpring, startNum), out long v))
-        {
-            //Console.WriteLine("Cache");
-            return v;
         }
 
         long result = 0;
@@ -126,15 +119,7 @@ internal class Day12 : Solver
 
         Int128 alternative = current | ((((Int128)1 << row.numbers[startNum]) - 1) << startSpring);
 
-        // if ((row.damagedSprings & ((Int128)1 << (startSpring + row.numbers[startNum]))) == 0)
-        {
-            result += SolveRecursive(row, startSpring + row.numbers[startNum] + 1, startNum + 1, alternative);
-        }
-
-        if (result > 0)
-        {
-             //result++;
-        }
+        result += SolveRecursive(row, startSpring + row.numbers[startNum] + 1, startNum + 1, alternative);
 
         row.AddCache((startSpring, startNum), result);
         return result;
@@ -158,10 +143,6 @@ internal class Day12 : Solver
                     springs = springs + (i < 4 ? "?" : "") + orig_springs;
                 }
             }
-
-            //Console.WriteLine("AAAAAAAAAAA");
-            //Console.WriteLine(springs);
-            //Console.WriteLine(string.Join(",", numbers));
 
             rows.Add(new Row(springs, numbers));
         }
