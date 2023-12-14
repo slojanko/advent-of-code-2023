@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-internal class Day12 : Solver
+﻿internal class Day12 : Solver
 {
     public class Row
     {
@@ -68,7 +66,6 @@ internal class Day12 : Solver
 
         ReadInput(input, rows, true);
 
-        int longest = 0;
         foreach (var row in rows)
         {
             long temp = SolveRecursive(row, 0, 0, 0);
@@ -77,8 +74,6 @@ internal class Day12 : Solver
 
             row.cache.Clear();
         }
-
-        Console.WriteLine(longest);
 
         PrintHard(result);
     }
