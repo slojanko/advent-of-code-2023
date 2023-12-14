@@ -78,6 +78,8 @@ internal class Day12 : Solver
             Console.WriteLine(temp);
 
             result += temp;
+
+            row.cache.Clear();
         }
 
         Console.WriteLine(longest);
@@ -87,9 +89,10 @@ internal class Day12 : Solver
 
     public long SolveRecursive(Row row, int startSpring, int startNum, Int128 current)
     {
-        if (((row.damagedSprings & current) != current) || ((row.allSprings & current) != current))
+        Int128 valid_damagedSpring = row.damagedSprings & (((Int128)1 << startSpring) - 1);
+        if ((((valid_damagedSpring ^ current) & valid_damagedSpring) > 0) || ((row.allSprings & current) != current))
         {
-            //Console.WriteLine("A");
+            //Console.WriteLine($"A {Convert.ToString((int)valid_damagedSpring, 2)} {Convert.ToString((int)row.allSprings, 2)} {Convert.ToString((int)current, 2)}");
             return 0;
         }
 
@@ -97,22 +100,23 @@ internal class Day12 : Solver
         {
             if (((row.damagedSprings & current) == row.damagedSprings) && ((row.allSprings & current) == current))
             {
-                //Console.WriteLine("B");
+                //Console.WriteLine($"B {Convert.ToString((int)current, 2)}");
                 return 1;
             }
 
-            //Console.WriteLine("C");
+            //Console.WriteLine($"C {Convert.ToString((int)current, 2)}");
             return 0;
         }
 
         if (startSpring >= row.springsCount)
         {
-            //Console.WriteLine("D");
+            //Console.WriteLine($"D {Convert.ToString((int)current, 2)}");
             return 0;
         }
 
         if (row.cache.TryGetValue((startSpring, startNum), out long v))
         {
+            //Console.WriteLine("Cache");
             return v;
         }
 
