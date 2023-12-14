@@ -1,23 +1,40 @@
-﻿internal class Day12 : Solver
-{
-    public enum MatchType
-    {
-        None,
-        Spring,
-    }
+﻿using System.Linq;
 
+internal class Day12 : Solver
+{
     public class Row
     {
-        public string springs;
+        public Int128 damagedSprings;
+        public Int128 allSprings;
+
+        public int springsCount;
         public List<int> numbers;
-        public char[] temp;
+        public long tries;
+
+        public Dictionary<(int, int), long> cache;
 
         public Row(string springs, List<int> numbers)
         {
-            this.springs = springs;
             this.numbers = numbers;
-            this.temp = new char[this.springs.Length];
-            Array.Fill(temp, '.');
+            this.springsCount = springs.Length;
+            this.cache = new Dictionary<(int, int), long>();
+            
+            for (int i = 0; i < springs.Length; i++)
+            {
+                if (springs[i] == '#')
+                {
+                    damagedSprings |= (Int128)1 << i;
+                    allSprings |= (Int128)1 << i;
+                } else if (springs[i] == '?')
+                {
+                    allSprings |= (Int128)1 << i;
+                }
+            }
+        }
+
+        public void AddCache((int, int) key, long value)
+        {
+            cache.Add(key, value);
         }
     }
 
@@ -28,11 +45,17 @@
 
         List<Row> rows = new List<Row>();
 
-        ReadInput(input, rows);
+        ReadInput(input, rows, false);
 
         foreach (var row in rows)
         {
-            result += SolveRecursive(row, 0, 0);
+            long temp = SolveRecursive(row, 0, 0, 0);
+
+            Console.WriteLine(temp);
+
+            result += temp;
+
+            row.cache.Clear();
         }
 
         PrintEasy(result);
@@ -43,108 +66,99 @@
         string[] input = File.ReadAllLines(".\\Inputs\\day12.txt");
         long result = 0;
 
+        List<Row> rows = new List<Row>();
+
+        ReadInput(input, rows, true);
+
+        int longest = 0;
+        foreach (var row in rows)
+        {
+            long temp = SolveRecursive(row, 0, 0, 0);
+
+            Console.WriteLine(temp);
+
+            result += temp;
+        }
+
+        Console.WriteLine(longest);
+
         PrintHard(result);
     }
 
-    public long SolveRecursive(Row row, int sprId, int numId)
+    public long SolveRecursive(Row row, int startSpring, int startNum, Int128 current)
     {
-        int next_damaged = sprId == -1 ? sprId : GetNextDamaged(row, sprId);
-
-        if (numId == row.numbers.Count && next_damaged == -1)
+        if (((row.damagedSprings & current) != current) || ((row.allSprings & current) != current))
         {
-            Console.WriteLine(new string(row.temp) + " +");
-            return 1;
+            //Console.WriteLine("A");
+            return 0;
         }
 
-        if (sprId == -1)
+        if (startNum == row.numbers.Count)
         {
-            Console.WriteLine(new string(row.temp) + " -");
+            if (((row.damagedSprings & current) == row.damagedSprings) && ((row.allSprings & current) == current))
+            {
+                //Console.WriteLine("B");
+                return 1;
+            }
+
+            //Console.WriteLine("C");
             return 0;
+        }
+
+        if (startSpring >= row.springsCount)
+        {
+            //Console.WriteLine("D");
+            return 0;
+        }
+
+        if (row.cache.TryGetValue((startSpring, startNum), out long v))
+        {
+            return v;
         }
 
         long result = 0;
 
-        for (int i = sprId; i <= next_damaged; i++)
+        result += SolveRecursive(row, startSpring + 1, startNum, current);
+
+        Int128 alternative = current | ((((Int128)1 << row.numbers[startNum]) - 1) << startSpring);
+
+        // if ((row.damagedSprings & ((Int128)1 << (startSpring + row.numbers[startNum]))) == 0)
         {
-            MatchType type = GetMatchType(row, i, numId);
-            if (type == MatchType.None)
-            {
-                continue;
-            }
-
-            row.temp[i] = (char)((int)'0' + row.numbers[numId]);
-            Console.WriteLine(new string(row.temp));
-
-            int next_potential = GetNextPotential(row, i + row.numbers[numId]);
-
-            if (next_potential != - 1 && next_potential == i + row.numbers[numId])
-            {
-                if (row.springs[next_potential] == '#')
-                {
-                    row.temp[i] = '.';
-                    continue;
-                } else if (row.springs[next_potential] == '?')
-                {
-                    next_potential = GetNextPotential(row, i + 1 + row.numbers[numId]);
-                }
-            }
-
-            result += SolveRecursive(row, next_potential, numId + 1);
-
-            row.temp[i] = '.';
+            result += SolveRecursive(row, startSpring + row.numbers[startNum] + 1, startNum + 1, alternative);
         }
 
+        if (result > 0)
+        {
+             //result++;
+        }
+
+        row.AddCache((startSpring, startNum), result);
         return result;
     }
 
-    public MatchType GetMatchType(Row row, int sprId, int numId)
-    {
-        int end = sprId + row.numbers[numId];
-
-        for (int i = sprId; i < end; i++)
-        {
-            if (row.springs[i] == '.')
-            {
-                return MatchType.None;
-            }
-        }
-
-        return MatchType.Spring;
-    }
-
-    public int GetNextDamaged(Row row, int sprId)
-    {
-        for(int i = sprId; i < row.springs.Length; i++)
-        {
-            if (row.springs[i] == '#')
-            {
-                return i;
-            }
-        }
-
-        return -1;
-    }
-
-    public int GetNextPotential(Row row, int sprId)
-    { 
-        for (int i = sprId; i < row.springs.Length; i++)
-        {
-            if (row.springs[i] == '#' || row.springs[i] == '?')
-            {
-                return i;
-            }
-        }
-
-        return -1;
-    }
-
-    public void ReadInput(string[] input, List<Row> rows)
+    public void ReadInput(string[] input, List<Row> rows, bool is_hard)
     {
         foreach (var line in input)
         {
             string[] split = line.Split(' ');
             string springs = split[0];
             List<int> numbers = split[1].Split(',').Select(int.Parse).ToList();
+
+            if (is_hard) {
+                string orig_springs = springs;
+                List<int> orig_numbers = new List<int>(numbers);
+
+                for(int i = 0; i < 4; i++)
+                {
+                    numbers.AddRange(orig_numbers);
+                    springs = springs + (i < 4 ? "?" : "") + orig_springs;
+                }
+            }
+
+            //Console.WriteLine("AAAAAAAAAAA");
+            //Console.WriteLine(springs);
+            //Console.WriteLine(string.Join(",", numbers));
+
             rows.Add(new Row(springs, numbers));
         }
     }
