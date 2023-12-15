@@ -64,7 +64,7 @@
                 path_index = path_index == path.Length - 1 ? 0 : path_index + 1;
             }
 
-            Console.WriteLine(string.Join(' ', end_visits_global_steps));
+            //Console.WriteLine(string.Join(' ', end_visits_global_steps));
         }
     }
 

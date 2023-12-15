@@ -162,7 +162,7 @@
 
                 if (crossings % 2 == 1)
                 {
-                    Console.WriteLine($"{x} {y} crosses {crossings}");
+                    // Console.WriteLine($"{x} {y} crosses {crossings}");
                     result++;
                 }
             }
