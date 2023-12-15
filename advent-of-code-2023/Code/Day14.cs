@@ -10,31 +10,7 @@
 
         ReadInput(input, grid);
 
-        for(int y = 0; y < grid.Count; y++)
-        {
-            for(int x = 0; x < grid[0].Count; x++)
-            {
-                if (grid[y][x] != 'O')
-                {
-                    continue;
-                }
-
-                int curr_y = y;
-                while(true)
-                {
-                    if (curr_y == 0 || grid[curr_y - 1][x] != '.')
-                    {
-                        result += grid.Count - curr_y;
-                        break;
-                    } else
-                    {
-                        grid[curr_y][x] = '.';
-                        grid[curr_y - 1][x] = 'O';
-                        curr_y--;
-                    }
-                }
-            }
-        }
+        result = RollNorth(grid);
 
         PrintEasy(result);
     }
@@ -45,6 +21,40 @@
         long result = 0;
 
         PrintHard(result);
+    }
+
+    public long RollNorth(List<List<char>> grid)
+    {
+        long result = 0;
+
+        for (int y = 0; y < grid.Count; y++)
+        {
+            for (int x = 0; x < grid[0].Count; x++)
+            {
+                if (grid[y][x] != 'O')
+                {
+                    continue;
+                }
+
+                int curr_y = y;
+                while (true)
+                {
+                    if (curr_y == 0 || grid[curr_y - 1][x] != '.')
+                    {
+                        result += grid.Count - curr_y;
+                        break;
+                    }
+                    else
+                    {
+                        grid[curr_y][x] = '.';
+                        grid[curr_y - 1][x] = 'O';
+                        curr_y--;
+                    }
+                }
+            }
+        }
+
+        return result;
     }
 
     public void ReadInput(string[] input, List<List<char>> grid)
