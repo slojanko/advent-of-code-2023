@@ -1,8 +1,4 @@
-﻿using System.Data;
-using System.Data.Common;
-using static Day13;
-
-internal class Day13 : Solver
+﻿internal class Day13 : Solver
 {
     public class Grid
     {
