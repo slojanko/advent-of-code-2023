@@ -58,8 +58,12 @@
         //day14.SolveEasy();
         //day14.SolveHard();
 
-        Solver day15 = new Day15();
-        day15.SolveEasy();
-        day15.SolveHard();
+        //Solver day15 = new Day15();
+        //day15.SolveEasy();
+        //day15.SolveHard();
+
+        Solver day16 = new Day16();
+        day16.SolveEasy();
+        day16.SolveHard();
     }
 }
