@@ -1,4 +1,6 @@
-﻿public static class Program
+﻿using System.Diagnostics;
+
+public static class Program
 {
     public static void Main(string[] args)
     {
@@ -62,8 +64,12 @@
         //day15.SolveEasy();
         //day15.SolveHard();
 
-        Solver day16 = new Day16();
-        day16.SolveEasy();
-        day16.SolveHard();
+        //Solver day16 = new Day16();
+        //day16.SolveEasy();
+        //day16.SolveHard();
+
+        Solver day17 = new Day17();
+        day17.SolveEasy();
+        day17.SolveHard();
     }
 }
