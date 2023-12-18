@@ -68,8 +68,18 @@ public static class Program
         //day16.SolveEasy();
         //day16.SolveHard();
 
+        Stopwatch stopWatch = new Stopwatch();
+        stopWatch.Start();
         Solver day17 = new Day17();
         day17.SolveEasy();
+        stopWatch.Stop();
+        TimeSpan ts = stopWatch.Elapsed;
+        Console.WriteLine(ts.TotalMilliseconds);
+        stopWatch.Restart();
         day17.SolveHard();
+        stopWatch.Stop();
+        // Get the elapsed time as a TimeSpan value.
+        ts = stopWatch.Elapsed;
+        Console.WriteLine(ts.TotalMilliseconds);
     }
 }

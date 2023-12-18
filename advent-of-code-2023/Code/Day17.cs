@@ -33,14 +33,14 @@ internal class Day17 : Solver
         public int x;
         public int y;
         public int cost;
-        public List<(Direction, int)> finished;
+        public List<int> finished; // Encodes steps_since_turn and direction
 
         public Block(int x, int y, int cost)
         {
             this.x = x;
             this.y = y;
             this.cost = cost;
-            this.finished = new List<(Direction, int)>();
+            this.finished = new List<int>();
         }
     }
 
@@ -53,8 +53,8 @@ internal class Day17 : Solver
         ReadInput(input, ref grid);
 
         List<BlockVisit> queue = new List<BlockVisit>();
-        queue.Add(new BlockVisit(grid[0, 0], Direction.Right, 1, 0));
-        queue.Add(new BlockVisit(grid[0, 0], Direction.Down, 1, 0));
+        queue.Add(new BlockVisit(grid[0, 0], Direction.Right, 0, 0));
+        queue.Add(new BlockVisit(grid[0, 0], Direction.Down, 0, 0));
 
         while (true)
         {
@@ -66,7 +66,7 @@ internal class Day17 : Solver
             }
 
             queue.RemoveAt(0);
-            visit.block.finished.Add((visit.direction, visit.steps_since_turn));
+            visit.block.finished.Add((int)visit.direction + 10 * visit.steps_since_turn);
 
             // Move in all directions, except back
             if (visit.direction != Direction.Down)
@@ -114,7 +114,7 @@ internal class Day17 : Solver
             }
 
             queue.RemoveAt(0);
-            visit.block.finished.Add((visit.direction, visit.steps_since_turn));
+            visit.block.finished.Add((int)visit.direction + 10 * visit.steps_since_turn);
 
             // Move in all directions, except back
             if (visit.direction != Direction.Down)
@@ -156,13 +156,9 @@ internal class Day17 : Solver
         }
 
         Block new_block = grid[new_y, new_x];
-
-        foreach (var finish in new_block.finished)
+        if (new_block.finished.Contains((int)direction + 10 * new_steps_since_turn))
         {
-            if (finish.Item1 == direction && finish.Item2 == new_steps_since_turn)
-            {
-                return;
-            }
+            return;
         }
 
         int new_total_steps = source.total_steps + new_block.cost;
@@ -171,12 +167,6 @@ internal class Day17 : Solver
         {
             if (new_block == queue[i].block && queue[i].direction == direction && queue[i].steps_since_turn == new_steps_since_turn)
             {
-                if (new_total_steps < queue[i].total_steps) 
-                { 
-                    queue[i].total_steps = new_total_steps;
-                    ReAddSorted(queue, i);
-                }
-
                 return;
             }
         }
@@ -200,13 +190,9 @@ internal class Day17 : Solver
         }
 
         Block new_block = grid[new_y, new_x];
-
-        foreach (var finish in new_block.finished)
+        if (new_block.finished.Contains((int)direction + 10 * new_steps_since_turn))
         {
-            if (finish.Item1 == direction && finish.Item2 == new_steps_since_turn)
-            {
-                return;
-            }
+            return;
         }
 
         int new_total_steps = source.total_steps + new_block.cost;
@@ -215,12 +201,6 @@ internal class Day17 : Solver
         {
             if (new_block == queue[i].block && queue[i].direction == direction && queue[i].steps_since_turn == new_steps_since_turn)
             {
-                if (new_total_steps < queue[i].total_steps)
-                {
-                    queue[i].total_steps = new_total_steps;
-                    ReAddSorted(queue, i);
-                }
-
                 return;
             }
         }
