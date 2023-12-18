@@ -108,7 +108,7 @@ internal class Day17 : Solver
         {
             BlockVisit visit = queue[0];
 
-            if (visit.block.x == grid.GetLength(1) - 1 && visit.block.y == grid.GetLength(0) - 1 && visit.steps_since_turn >= 4 && visit.steps_since_turn <= 10)
+            if (visit.block.x == grid.GetLength(1) - 1 && visit.block.y == grid.GetLength(0) - 1)
             {
                 break;
             }
