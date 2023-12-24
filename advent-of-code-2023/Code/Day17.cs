@@ -1,7 +1,4 @@
-﻿using System.Linq;
-using static Day16;
-
-internal class Day17 : Solver
+﻿internal class Day17 : Solver
 {
     public enum Direction
     {

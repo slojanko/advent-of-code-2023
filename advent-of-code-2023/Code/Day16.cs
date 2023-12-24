@@ -1,6 +1,5 @@
 ﻿internal class Day16 : Solver
 {
-    [System.Flags]
     public enum Direction
     {
         None = 0,
