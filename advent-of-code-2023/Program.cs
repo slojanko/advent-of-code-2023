@@ -72,8 +72,12 @@ public static class Program
         //day17.SolveEasy();
         //day17.SolveHard();        
         
-        Solver day18 = new Day18();
-        day18.SolveEasy();
-        day18.SolveHard();
+        //Solver day18 = new Day18();
+        //day18.SolveEasy();
+        //day18.SolveHard();  
+        
+        Solver day19 = new Day19();
+        day19.SolveEasy();
+        day19.SolveHard();
     }
 }

@@ -1,5 +1,4 @@
-﻿// https://en.wikipedia.org/wiki/Shoelace_formula#Trapezoid_formula_2
-internal class Day18 : Solver
+﻿internal class Day18 : Solver
 {
     public enum Direction
     {
