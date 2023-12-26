@@ -219,7 +219,7 @@
 
         while(queue.Count > 0)
         {
-            var range = queue.First.Value;
+            var range = queue.First();
             queue.RemoveFirst();
 
             if (range.Item1 == "R")
